@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EpiSignal AI</title>
+</head>
+
+<body style="font-family: Arial; text-align:center;">
+
+  <h1>🦠 EpiSignal AI</h1>
+
+  <p>Frühes Warnsystem für Krankheitsausbrüche</p>
+
+  <h2>Symptome eingeben</h2>
+
+  <input id="stadt" placeholder="Stadt eingeben"><br><br>
+
+  <label><input type="checkbox" id="fieber"> Fieber</label><br>
+  <label><input type="checkbox" id="husten"> Husten</label><br>
+  <label><input type="checkbox" id="muedigkeit"> Müdigkeit</label><br>
+
+  <br>
+
+  <button onclick="checken()">Risiko prüfen</button>
+
+  <h3 id="ergebnis"></h3>
+
+  <script>
+    function checken() {
+      let punkte = 0;
+
+      if(document.getElementById("fieber").checked) punkte += 3;
+      if(document.getElementById("husten").checked) punkte += 2;
+      if(document.getElementById("muedigkeit").checked) punkte += 1;
+
+      let stadt = document.getElementById("stadt").value;
+
+      let risiko = "";
+
+      if(punkte <= 2) risiko = "NIEDRIG 🟢";
+      else if(punkte <= 4) risiko = "MITTEL 🟡";
+      else risiko = "HOCH 🔴";
+
+      document.getElementById("ergebnis").innerHTML =
+        stadt + ": " + risiko;
+    }
+  </script>
+
+</body>
+</html>
