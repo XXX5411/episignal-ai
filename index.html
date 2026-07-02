@@ -1,51 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="google-site-verification" content="z5lPMZ4Q57qwYI1SFTahJNFE3KK6-C4VuStXpK7E3VE" />
-  <title>EpiSignal AI</title>
+  <title>EpiSignal v2</title>
 </head>
 
-<body style="font-family: Arial; text-align:center;">
+<body>
 
-  <h1>🦠 EpiSignal AI</h1>
+<h1>EpiSignal AI v2</h1>
 
-  <p>Frühes Warnsystem für Krankheitsausbrüche</p>
+<input id="city" placeholder="Stadt">
 
-  <h2>Symptome eingeben</h2>
+<br><br>
 
-  <input id="stadt" placeholder="Stadt eingeben"><br><br>
+<label><input type="checkbox" id="fever"> Fieber</label>
+<label><input type="checkbox" id="cough"> Husten</label>
+<label><input type="checkbox" id="fatigue"> Müdigkeit</label>
 
-  <label><input type="checkbox" id="fieber"> Fieber</label><br>
-  <label><input type="checkbox" id="husten"> Husten</label><br>
-  <label><input type="checkbox" id="muedigkeit"> Müdigkeit</label><br>
+<br><br>
 
-  <br>
+<button onclick="send()">Senden</button>
 
-  <button onclick="checken()">Risiko prüfen</button>
+<h3 id="result"></h3>
 
-  <h3 id="ergebnis"></h3>
+<script>
 
-  <script>
-    function checken() {
-      let punkte = 0;
+function calcScore(){
+  let score = 0;
 
-      if(document.getElementById("fieber").checked) punkte += 3;
-      if(document.getElementById("husten").checked) punkte += 2;
-      if(document.getElementById("muedigkeit").checked) punkte += 1;
+  if(document.getElementById("fever").checked) score += 3;
+  if(document.getElementById("cough").checked) score += 2;
+  if(document.getElementById("fatigue").checked) score += 1;
 
-      let stadt = document.getElementById("stadt").value;
+  return score;
+}
 
-      let risiko = "";
+function riskLevel(score){
+  if(score >= 6) return "HOCH 🔴";
+  if(score >= 3) return "MITTEL 🟡";
+  return "NIEDRIG 🟢";
+}
 
-      if(punkte <= 2) risiko = "NIEDRIG 🟢";
-      else if(punkte <= 4) risiko = "MITTEL 🟡";
-      else risiko = "HOCH 🔴";
+function send(){
 
-      document.getElementById("ergebnis").innerHTML =
-        stadt + ": " + risiko;
-    }
-  </script>
+  let city = document.getElementById("city").value;
+  let score = calcScore();
+  let risk = riskLevel(score);
+
+  document.getElementById("result").innerText =
+    city + " → " + risk;
+
+  fetch("DEINE_APPS_SCRIPT_URL", {
+    method: "POST",
+    body: JSON.stringify({
+      city: city,
+      fever: document.getElementById("fever").checked,
+      cough: document.getElementById("cough").checked,
+      fatigue: document.getElementById("fatigue").checked,
+      score: score,
+      risk: risk
+    })
+  });
+
+}
+
+</script>
 
 </body>
 </html>
